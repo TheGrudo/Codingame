@@ -1,0 +1,1 @@
+https://www.codingame.com/ide/puzzle/you-are-the-father-maury-povich-style
