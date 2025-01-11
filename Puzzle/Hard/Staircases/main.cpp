@@ -1,44 +1,52 @@
+#undef _GLIBCXX_DEBUG                // disable run-time bound checking, etc
+#pragma GCC optimize("Ofast,inline") // Ofast = O3,fast-math,allow-store-data-races,no-protect-parens
+
 #include <iostream>
+#include <string>
 #include <vector>
+#include <algorithm>
 
-// Funkcja obliczająca liczbę różnych schodów z N cegieł
-int countStaircases(int N)
+using namespace std;
+
+long countStaircasesMemo(long N, int minStep, vector<vector<long>> &memo)
 {
-    // Tablica dp[i][j] przechowuje liczbę sposobów na ułożenie schodów
-    // z sumą cegieł równą i, przy czym największy stopień ma wysokość co najwyżej j.
-    std::vector<std::vector<int>> dp(N + 1, std::vector<int>(N + 1, 0));
+    // Jeśli N jest równe 0, to jest tylko 1 sposób (brak schodków)
+    if (N == 0)
+        return 1;
 
-    // Warunek bazowy: istnieje jeden sposób na zbudowanie schodów o sumie 0 (brak cegieł)
-    dp[0][0] = 1;
+    // Jeśli N jest mniejsze niż 0, nie ma możliwości (brak rozwiązania)
+    if (N < 0)
+        return 0;
 
-    // Dynamiczne wypełnianie tablicy dp
-    for (int bricks = 1; bricks <= N; ++bricks)
+    // Jeśli zapisaliśmy wynik, zwróć go z memo
+    if (memo[N][minStep] != -1)
+        return memo[N][minStep];
+
+    // Rozważamy dwie możliwości: dodanie nowego kroku lub nie
+    long result = 0;
+    for (int step = minStep; step <= N; ++step)
     {
-        for (int maxStep = 1; maxStep <= N; ++maxStep)
-        {
-            // Sposoby na ułożenie schodów bez użycia "maxStep"
-            dp[bricks][maxStep] = dp[bricks][maxStep - 1];
-
-            // Jeśli używamy "maxStep", sprawdzamy czy da się dodać do istniejącego rozwiązania
-            if (bricks >= maxStep)
-            {
-                dp[bricks][maxStep] += dp[bricks - maxStep][maxStep - 1];
-            }
-        }
+        result += countStaircasesMemo(N - step, step + 1, memo); // Dodajemy nowy krok
     }
 
-    // Wynik to liczba sposobów na zbudowanie schodów o sumie N z maksymalnym stopniem <= N
-    return dp[N][N];
+    // Zapisujemy wynik w memo
+    memo[N][minStep] = result;
+    return result;
 }
 
+// Główna funkcja licząca liczbę schodków
+long countStaircases(long N)
+{
+    vector<vector<long>> memo(N + 1, vector<long>(N + 1, -1)); // Memoizacja
+    return countStaircasesMemo(N, 1, memo) - 1;                // Zaczynamy od pierwszego kroku
+}
 int main()
 {
-    int N;
-    std::cout << "Enter the number of bricks: ";
-    std::cin >> N;
+    int n;
+    cin >> n;
+    cin.ignore();
 
-    int result = countStaircases(N);
-    std::cout << "Number of different staircases that can be built: " << result << std::endl;
+    long result = countStaircases(n);
 
-    return 0;
+    cout << result << endl;
 }
