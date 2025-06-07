@@ -1,0 +1,1 @@
+https://www.codingame.com/ide/puzzle/how-high-up-does-the-beer-go
