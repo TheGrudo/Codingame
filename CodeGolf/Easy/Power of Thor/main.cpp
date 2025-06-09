@@ -1,2 +1,2 @@
-#include<iostream>
-using namespace std;main(){int a,b,c,d;cin>>a>>b>>c>>d;for(;;){if(d>b){cout<<"N";d--;}if(d<b){cout<<"S";d++;}if(c>a){cout<<"W";c--;}if(c<a){cout<<"E";c++;}cout<<endl;}}
+#include <iostream>
+main(){int a,b,c,d;std::cin >> a >> b >> c >> d;for(;;){std::cout<<(d>b?"N":d<b?"S":"")<<(c>a?"W":c<a?"E":"")<<"\n";d+=d<b;d-=d>b;c+=c<a;c-=c>a;}}
